@@ -112,28 +112,43 @@ public class AlbumServlet extends HttpServlet {
         res.getWriter().write(new Gson().toJson("Request is not multipart."));
         return;
       }
-      String urlPath = req.getPathInfo();
-      ServletFileUpload upload = new ServletFileUpload();
-      FileItemIterator iter = upload.getItemIterator(req);
-      Album album1 = new Album();
-      Profile profile = new Profile();
+//      String urlPath = req.getPathInfo();
+//      ServletFileUpload upload = new ServletFileUpload();
+//      FileItemIterator iter = upload.getItemIterator(req);
+        Album album1 = new Album();
+//      Profile profile = new Profile();
 
-      while(iter.hasNext()) {
-        FileItemStream item = iter.next();
-        String name = item.getFieldName();
-        InputStream stream = item.openStream();
-        if (!item.isFormField()) {
-          if ("image".equals(name)) {
-            album1.imageContent = IOUtils.toByteArray(stream);  // Apache Commons IO
-          }
-        } else {
-          if ("profile".equals(name)) {
-            String albumInfoJson = IOUtils.toString(stream, String.valueOf(StandardCharsets.UTF_8));
-            profile = new Gson().fromJson(albumInfoJson, Profile.class);
-          }
+//      while(iter.hasNext()) {
+//        FileItemStream item = iter.next();
+//        String name = item.getFieldName();
+//        InputStream stream = item.openStream();
+//        if (!item.isFormField()) {
+//          if ("image".equals(name)) {
+//            album1.imageContent = IOUtils.toByteArray(stream);  // Apache Commons IO
+//          }
+//        } else {
+//          if ("profile".equals(name)) {
+//            String albumInfoJson = IOUtils.toString(stream, String.valueOf(StandardCharsets.UTF_8));
+//            profile = new Gson().fromJson(albumInfoJson, Profile.class);
+//          }
+//        }
+//      }
+      Part imagePart = req.getPart("image");
+      byte[] imageContent = null;
+      if (imagePart != null){
+        try (InputStream is = imagePart.getInputStream()){
+          imageContent = IOUtils.toByteArray(is);
         }
       }
+
+      Part albumProfilePart = req.getPart("profile");
+      if (albumProfilePart == null) {
+        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        res.getWriter().write(new Gson().toJson("Missing profile"));
+      }
+      Profile profile = extractAlbumToProfile(albumProfilePart);
       album1.albumInfo = profile;
+//      album1.albumInfo = profile;
       //int id1 = albumMap.size() + 1;
       //albumMap.put(id1, album1);
       try (Connection connection = setupDatabaseConnection()) {
@@ -200,6 +215,13 @@ public class AlbumServlet extends HttpServlet {
       return DatabaseConnectionPool.getConnection();
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    }
+  }
+  private Profile extractAlbumToProfile(Part part) throws IOException {
+    try (InputStream is = part.getInputStream()) {
+      String profileJson = IOUtils.toString(is, String.valueOf(StandardCharsets.UTF_8));
+      Gson gson = new Gson();
+      return gson.fromJson(profileJson, Profile.class);
     }
   }
 }
