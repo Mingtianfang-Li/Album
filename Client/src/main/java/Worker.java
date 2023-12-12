@@ -27,10 +27,10 @@ public class Worker implements Runnable{
     private AlbumsProfile albumProfile;
     private LikeApi likeApiInstance;
     private String albumID;
-    public static final ConcurrentLinkedQueue<Long> latencies1 = new ConcurrentLinkedQueue<>();
-    public static final ConcurrentLinkedQueue<Long> latencies2 = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Long> latencies1;
+    private ConcurrentLinkedQueue<Long> latencies2;
 
-    public Worker( Counter unsucesssfulCounter) {
+    public Worker( Counter unsucesssfulCounter, ConcurrentLinkedQueue<Long> latencies1, ConcurrentLinkedQueue<Long> latencies2) {
         this.albumProfile = new AlbumsProfile();
         albumProfile.setArtist("artist");
         albumProfile.setTitle("title");
@@ -38,6 +38,8 @@ public class Worker implements Runnable{
         this.unsucesssfulCounter = unsucesssfulCounter;
         this.apiInstance = apiSetUp();
         this.likeApiInstance = reviewApiSetup();
+        this.latencies1 = latencies1;
+        this.latencies2 = latencies2;
     }
 
     public DefaultApi apiSetUp() {
@@ -121,7 +123,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-
+        long latency3 = System.currentTimeMillis() - latency2;
+        latencies22.add(latency3);
         retries = 0;
         do {
             try {
@@ -136,7 +139,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-
+        long latency4 = System.currentTimeMillis() - latency3;
+        latencies22.add(latency4);
         retries = 0;
         do {
             try {
@@ -151,8 +155,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-        long latency3 = System.currentTimeMillis() - latency2;
-        latencies22.add(latency3);
+        long latency5 = System.currentTimeMillis() - latency4;
+        latencies22.add(latency5);
         retries = 0;
         do {
             try {
@@ -168,8 +172,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-        long latency4 = System.currentTimeMillis() - latency3;
-        latencies22.add(latency4);
+        long latency6 = System.currentTimeMillis() - latency5;
+        latencies22.add(latency6);
     }
 
     private String generateAlbumID(String number){
@@ -178,21 +182,4 @@ public class Worker implements Runnable{
         return Integer.toString(n);
     }
 
-    public static void calculateAndDisplayStatistics(ConcurrentLinkedQueue<Long> latenciesQueue) {
-        List<Long> latencies = new ArrayList<>(latenciesQueue);
-        Collections.sort(latencies);
-        long min = latencies.get(0);
-        long max = latencies.get(latencies.size() - 1);
-        double median = latencies.size() % 2 == 0 ?
-                (latencies.get(latencies.size() / 2) + latencies.get(latencies.size() / 2 - 1)) / 2.0 :
-                latencies.get(latencies.size() / 2);
-        double average = latencies.stream().mapToLong(val -> val).average().orElse(0.0);
-        long p99 = latencies.get((int) (latencies.size() * 0.99));
-
-        System.out.println("Min Latency: " + min + " ms");
-        System.out.println("Max Latency: " + max + " ms");
-        System.out.println("Median Latency: " + median + " ms");
-        System.out.println("Average Latency: " + average + " ms");
-        System.out.println("99th Percentile Latency: " + p99 + " ms");
-    }
 }
