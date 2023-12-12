@@ -43,7 +43,7 @@ public class Worker implements Runnable{
 
     public LikeApi reviewApiSetup() {
         ApiClient apiClient = new ApiClient();
-        apiClient.setBasePath(reviewUrl);
+        apiClient.setBasePath(url);
         return new LikeApi(apiClient);
     }
 
