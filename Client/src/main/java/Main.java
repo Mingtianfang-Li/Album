@@ -35,7 +35,6 @@ public class Main {
         for (int i = 0; i < numThreadGroups; i++) {
             threads[i].join();
         }
-
         long end = System.currentTimeMillis();
         double wallTime = (end - start) / 1000.0;
         int totalRequestsSent = threadGroupSize * numThreadGroups * totalRequest * 4;
@@ -45,6 +44,7 @@ public class Main {
         System.out.println("Throughput: " + throughput + " requests/second");
         System.out.println("Successful Requests: " + sucessfulCount);
         System.out.println("Failed Requests: " + unsucessfulCounter.getVal());
+
     }
 
 }
