@@ -12,19 +12,16 @@ public class main {
         MultipleThread();
     }
 
-    private static void MultipleThread() throws InterruptedException {
+    private static void MultipleThread(){
         long start = System.currentTimeMillis();
-        // countDownLatch
-        CountDownLatch completed = new CountDownLatch(threadGroupSize * numThreadGroups * totalRequest);
         Counter unsucessfulCounter = new Counter();
         for (int i = 0; i < numThreadGroups; i++){
             for (int j = 0; j < threadGroupSize; j++){
-                Runnable worker = new Worker(completed, unsucessfulCounter);
+                Runnable worker = new Worker(unsucessfulCounter);
                 Thread thread = new Thread(worker);
                 thread.start();
             }
         }
-        completed.await();
         long end = System.currentTimeMillis();
         double wallTime = (end - start) / 1000.0;
         int totalRequestsSent = threadGroupSize * numThreadGroups * totalRequest;

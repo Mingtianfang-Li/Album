@@ -15,14 +15,12 @@ public class Worker implements Runnable{
     final static private String fileUrl = "";
     private File imagefile;
 
-    private CountDownLatch completed;
     private Counter unsucesssfulCounter;
 
     private DefaultApi apiInstance;
     private static final int totalRequests = 100;
 
-    public Worker(CountDownLatch completed, Counter unsucesssfulCounter) {
-        this.completed = completed;
+    public Worker( Counter unsucesssfulCounter) {
         this.unsucesssfulCounter = unsucesssfulCounter;
         this.apiInstance = apiSetUp();
     }
@@ -38,14 +36,12 @@ public class Worker implements Runnable{
 
     private void fun1() {
         imagefile = new File(fileUrl);
-        long startTime = System.currentTimeMillis();
         for (int i = 0; i <  totalRequests; i++){
             try {
                 requestWithRetry();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            completed.countDown();
         }
     }
 
