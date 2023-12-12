@@ -178,7 +178,7 @@ public class Worker implements Runnable{
 
     private String generateAlbumID(String number){
         Random rand = new Random();
-        int n = rand.nextInt(Integer.parseInt(number));
+        int n = rand.nextInt(Integer.parseInt(number)) + 1;
         return Integer.toString(n);
     }
 
