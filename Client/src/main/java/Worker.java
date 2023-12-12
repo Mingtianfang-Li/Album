@@ -4,6 +4,7 @@ import io.swagger.client.ApiClient;
 import io.swagger.client.ApiException;
 import io.swagger.client.api.DefaultApi;
 import io.swagger.client.model.*;
+import io.swagger.client.api.LikeApi;
 
 import java.io.File;
 import java.util.Random;
@@ -11,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Worker implements Runnable{
     final static private String url = "http://localhost:8080/HW2Server_war_exploded"; // server url
+    final static private String reviewUrl = "";
     final static private int MAX_RETRIES = 3;
     final static private String fileUrl = "nmtb.png";
     private File imagefile;
@@ -21,6 +23,7 @@ public class Worker implements Runnable{
     private static final int totalRequests = 100;
 
     private AlbumsProfile albumProfile;
+    private LikeApi likeApiInstance;
 
     public Worker( Counter unsucesssfulCounter) {
         this.albumProfile = new AlbumsProfile();
@@ -29,12 +32,19 @@ public class Worker implements Runnable{
         albumProfile.setYear("year");
         this.unsucesssfulCounter = unsucesssfulCounter;
         this.apiInstance = apiSetUp();
+        this.likeApiInstance = reviewApiSetup();
     }
 
     public DefaultApi apiSetUp() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
         return new DefaultApi(apiClient);
+    }
+
+    public LikeApi reviewApiSetup() {
+        ApiClient apiClient = new ApiClient();
+        apiClient.setBasePath(reviewUrl);
+        return new LikeApi(apiClient);
     }
 
     @Override
@@ -51,7 +61,7 @@ public class Worker implements Runnable{
         }
     }
 
-    private void requestWithRetry() {
+    private void requestWithRetry() throws ApiException {
         int retries = 0;
         boolean retry;
         String albumID = generateAlbumID();
@@ -82,8 +92,35 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES) {
             unsucesssfulCounter.inc();
         }
+        retries = 0;
+        do {
+            try {
+                retry = false;
+                likeApiInstance.review("like", albumID);
+            } catch (ApiException e) {
+                retries += 1;
+                retry = true;
+                e.printStackTrace();
+            }
+        } while ( retry && (retries < MAX_RETRIES));
+        if (retries == MAX_RETRIES){
+            unsucesssfulCounter.inc();
+        }
+        retries = 0;
+        do {
+            try {
+                retry = false;
+                likeApiInstance.getLikes(albumID);
+            } catch (ApiException e) {
+                retries += 1;
+                retry = true;
+                e.printStackTrace();
+            }
+        } while ( retry && (retries < MAX_RETRIES));
+        if (retries == MAX_RETRIES){
+            unsucesssfulCounter.inc();
+        }
     }
-
     private String generateAlbumID(){
         return "1";
         /*

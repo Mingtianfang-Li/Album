@@ -41,7 +41,7 @@ public class main {
 
         long end = System.currentTimeMillis();
         double wallTime = (end - start) / 1000.0;
-        int totalRequestsSent = threadGroupSize * numThreadGroups * totalRequest * 2;
+        int totalRequestsSent = threadGroupSize * numThreadGroups * totalRequest * 4;
         int sucessfulCount = (totalRequestsSent - unsucessfulCounter.getVal());
         double throughput = totalRequestsSent / wallTime;
         System.out.println("Wall Time: " + wallTime + " seconds");
