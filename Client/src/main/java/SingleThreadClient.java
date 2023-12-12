@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class SingleThreadClient {
-    final static private String url = "";
+    final static private String url = ""; // server url
     final static private int MAX_RETRIES = 3;
     final static private String fileUrl = "";
     private File imagefile;
