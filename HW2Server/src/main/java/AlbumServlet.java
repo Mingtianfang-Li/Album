@@ -1,5 +1,8 @@
 import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +15,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.util.stream.Collectors;
+
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -147,6 +152,7 @@ public class AlbumServlet extends HttpServlet {
         res.getWriter().write(new Gson().toJson("Missing profile"));
       }
       Profile profile = extractAlbumToProfile(albumProfilePart);
+      album1.imageContent = imageContent;
       album1.albumInfo = profile;
 //      album1.albumInfo = profile;
       //int id1 = albumMap.size() + 1;
@@ -218,10 +224,25 @@ public class AlbumServlet extends HttpServlet {
     }
   }
   private Profile extractAlbumToProfile(Part part) throws IOException {
-    try (InputStream is = part.getInputStream()) {
-      String profileJson = IOUtils.toString(is, String.valueOf(StandardCharsets.UTF_8));
-      Gson gson = new Gson();
-      return gson.fromJson(profileJson, Profile.class);
+    Profile profile = new Profile();
+    part.getInputStream().toString();
+    String infoString = new BufferedReader(new InputStreamReader(
+            part.getInputStream()))
+            .lines()
+            .collect(Collectors.joining("\n"));
+
+    String[] infoArray = infoString.split("\n");
+    if (infoArray.length > 1){
+      for (String line : infoArray){
+        if (line.contains("artist")){
+          profile.artist = line.split("artist: ")[1];
+        } else if (line.contains("title")) {
+          profile.title = line.split("title: ")[1];
+        } else if (line.contains("year")) {
+          profile.year = line.split("year: ")[1];
+        }
+      }
     }
+    return profile;
   }
 }
