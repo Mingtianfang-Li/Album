@@ -121,13 +121,44 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
+
+        retries = 0;
+        do {
+            try {
+                retry = false;
+                likeApiInstance.review("like", albumID);
+            } catch (ApiException e) {
+                retries += 1;
+                retry = true;
+                e.printStackTrace();
+            }
+        } while ( retry && (retries < MAX_RETRIES));
+        if (retries == MAX_RETRIES){
+            unsucesssfulCounter.inc();
+        }
+
+        retries = 0;
+        do {
+            try {
+                retry = false;
+                likeApiInstance.review("dislike", albumID);
+            } catch (ApiException e) {
+                retries += 1;
+                retry = true;
+                e.printStackTrace();
+            }
+        } while ( retry && (retries < MAX_RETRIES));
+        if (retries == MAX_RETRIES){
+            unsucesssfulCounter.inc();
+        }
         long latency3 = System.currentTimeMillis() - latency2;
         latencies22.add(latency3);
         retries = 0;
         do {
             try {
                 retry = false;
-                likeApiInstance.getLikes(albumID);
+                String likeID = generateAlbumID(albumID);
+                Likes lk = likeApiInstance.getLikes(likeID);
             } catch (ApiException e) {
                 retries += 1;
                 retry = true;
@@ -140,15 +171,13 @@ public class Worker implements Runnable{
         long latency4 = System.currentTimeMillis() - latency3;
         latencies22.add(latency4);
     }
-    private String generateAlbumID(){
-        return "1";
-        /*
-        Random r = new Random();
-        int id = r.nextInt(100) + 1;
-        return String.valueOf(id);
 
-         */
+    private String generateAlbumID(String number){
+        Random rand = new Random();
+        int n = rand.nextInt(Integer.parseInt(number));
+        return Integer.toString(n);
     }
+
     public static void calculateAndDisplayStatistics(ConcurrentLinkedQueue<Long> latenciesQueue) {
         List<Long> latencies = new ArrayList<>(latenciesQueue);
         Collections.sort(latencies);
