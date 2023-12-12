@@ -14,7 +14,8 @@ public class main {
 
     private static void MultipleThread() throws InterruptedException {
         long start = System.currentTimeMillis();
-        CountDownLatch completed = new CountDownLatch(threadGroupSize * numThreadGroups);
+        // countDownLatch
+        CountDownLatch completed = new CountDownLatch(threadGroupSize * numThreadGroups * totalRequest);
         Counter unsucessfulCounter = new Counter();
         for (int i = 0; i < numThreadGroups; i++){
             for (int j = 0; j < threadGroupSize; j++){
