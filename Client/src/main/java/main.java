@@ -35,6 +35,10 @@ public class main {
             threads[i].start();
             Thread.sleep(delay*1000);
         }
+        for (int i = 0; i < numThreadGroups; i++) {
+            threads[i].join();
+        }
+
         long end = System.currentTimeMillis();
         double wallTime = (end - start) / 1000.0;
         int totalRequestsSent = threadGroupSize * numThreadGroups * totalRequest * 2;

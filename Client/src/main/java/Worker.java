@@ -10,9 +10,9 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class Worker implements Runnable{
-    final static private String url = ""; // server url
+    final static private String url = "http://localhost:8080/HW2Server_war_exploded"; // server url
     final static private int MAX_RETRIES = 3;
-    final static private String fileUrl = "";
+    final static private String fileUrl = "nmtb.png";
     private File imagefile;
 
     private Counter unsucesssfulCounter;
@@ -20,7 +20,13 @@ public class Worker implements Runnable{
     private DefaultApi apiInstance;
     private static final int totalRequests = 100;
 
+    private AlbumsProfile albumProfile;
+
     public Worker( Counter unsucesssfulCounter) {
+        this.albumProfile = new AlbumsProfile();
+        albumProfile.setArtist("artist");
+        albumProfile.setTitle("title");
+        albumProfile.setYear("year");
         this.unsucesssfulCounter = unsucesssfulCounter;
         this.apiInstance = apiSetUp();
     }
@@ -28,7 +34,7 @@ public class Worker implements Runnable{
     public DefaultApi apiSetUp() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
-        return new DefaultApi();
+        return new DefaultApi(apiClient);
     }
 
     @Override
@@ -48,7 +54,6 @@ public class Worker implements Runnable{
     private void requestWithRetry() {
         int retries = 0;
         boolean retry;
-        AlbumsProfile albumProfile = new AlbumsProfile();
         String albumID = generateAlbumID();
         do {
             try {
@@ -57,6 +62,7 @@ public class Worker implements Runnable{
             } catch (ApiException e) {
                 retries += 1;
                 retry = true;
+                e.printStackTrace();
             }
         } while ( retry && (retries < MAX_RETRIES));
         if (retries == MAX_RETRIES) {
@@ -70,6 +76,7 @@ public class Worker implements Runnable{
             } catch (ApiException e) {
                 retries += 1;
                 retry = true;
+                e.printStackTrace();
             }
         } while ( retry && (retries < MAX_RETRIES));
         if (retries == MAX_RETRIES) {
@@ -78,8 +85,12 @@ public class Worker implements Runnable{
     }
 
     private String generateAlbumID(){
+        return "1";
+        /*
         Random r = new Random();
         int id = r.nextInt(100) + 1;
         return String.valueOf(id);
+
+         */
     }
 }
