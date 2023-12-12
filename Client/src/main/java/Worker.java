@@ -45,8 +45,8 @@ public class Worker implements Runnable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            completed.countDown();
         }
-        completed.countDown();
     }
 
     private void requestWithRetry() {

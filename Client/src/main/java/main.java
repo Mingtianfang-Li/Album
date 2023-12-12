@@ -22,7 +22,6 @@ public class main {
                 Runnable worker = new Worker(completed, unsucessfulCounter);
                 Thread thread = new Thread(worker);
                 thread.start();
-
             }
         }
         completed.await();
