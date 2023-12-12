@@ -174,7 +174,7 @@ public class AlbumServlet extends HttpServlet {
             long id1 = resultSet.getLong(1);
             System.out.println("Album created with id: " + id1);
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("albumId", id1);
+            responseData.put("albumID", id1);
             responseData.put("imageSize", album1.imageContent.length);
             String responseMessage = new Gson().toJson(responseData);
             res.setStatus(HttpServletResponse.SC_OK);
