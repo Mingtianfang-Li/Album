@@ -9,11 +9,11 @@ public class main {
     private static final int totalRequest = 100;
     private static final int delay = 2;
 
-    public static void main(String[] args) throws ApiException, InterruptedException {
+    public main(String[] args) throws ApiException, InterruptedException {
         MultipleThread();
     }
 
-    private static void MultipleThread(){
+    private static void MultipleThread() throws InterruptedException {
         long start = System.currentTimeMillis();
         Thread[] threads = new Thread[numThreadGroups];
         Counter unsucessfulCounter = new Counter();
