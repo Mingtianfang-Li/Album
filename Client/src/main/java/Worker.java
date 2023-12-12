@@ -91,8 +91,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES) {
             unsucesssfulCounter.inc();
         }
-        long latency1 = System.currentTimeMillis() - start;
-        latencies11.add(latency1);
+        long latency1 = System.currentTimeMillis();
+        latencies11.add(latency1 - start);
         retries = 0;
         do {
             try {
@@ -107,8 +107,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES) {
             unsucesssfulCounter.inc();
         }
-        long latency2 = System.currentTimeMillis() - latency1;
-        latencies11.add(latency2);
+        long latency2 = System.currentTimeMillis();
+        latencies11.add(latency2 - latency1);
         retries = 0;
         do {
             try {
@@ -123,8 +123,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-        long latency3 = System.currentTimeMillis() - latency2;
-        latencies22.add(latency3);
+        long latency3 = System.currentTimeMillis();
+        latencies22.add(latency3 - latency2);
         retries = 0;
         do {
             try {
@@ -139,8 +139,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-        long latency4 = System.currentTimeMillis() - latency3;
-        latencies22.add(latency4);
+        long latency4 = System.currentTimeMillis();
+        latencies22.add(latency4 - latency3);
         retries = 0;
         do {
             try {
@@ -155,8 +155,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-        long latency5 = System.currentTimeMillis() - latency4;
-        latencies22.add(latency5);
+        long latency5 = System.currentTimeMillis();
+        latencies22.add(latency5 - latency4);
         retries = 0;
         do {
             try {
@@ -172,8 +172,8 @@ public class Worker implements Runnable{
         if (retries == MAX_RETRIES){
             unsucesssfulCounter.inc();
         }
-        long latency6 = System.currentTimeMillis() - latency5;
-        latencies22.add(latency6);
+        long latency6 = System.currentTimeMillis();
+        latencies22.add(latency6 - latency5);
     }
 
     private String generateAlbumID(String number){
