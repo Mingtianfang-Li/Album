@@ -81,7 +81,7 @@ import java.util.*;
 
 public class DefaultApiExample {
 
-    public static void main(String[] args) {
+    public static void Main(String[] args) {
         
         DefaultApi apiInstance = new DefaultApi();
         String albumID = "albumID_example"; // String | path  parameter is album key to retrieve
@@ -104,7 +104,7 @@ import java.util.*;
 
 public class DefaultApiExample {
 
-    public static void main(String[] args) {
+    public static void Main(String[] args) {
         
         DefaultApi apiInstance = new DefaultApi();
         File image = new File("image_example"); // File | 

@@ -1,9 +1,6 @@
 import Counter.Counter;
-import io.swagger.client.ApiException;
 
-import java.util.concurrent.CountDownLatch;
-
-public class main {
+public class Main {
     private static final int threadGroupSize = 10;
     private static final int numThreadGroups = 10;
     private static final int totalRequest = 100;
