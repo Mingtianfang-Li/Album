@@ -9,7 +9,7 @@ public class main {
     private static final int totalRequest = 100;
     private static final int delay = 2;
 
-    public main(String[] args) throws ApiException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         MultipleThread();
     }
 
